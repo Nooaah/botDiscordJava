@@ -21,5 +21,5 @@ public class Bot {
     }
 }
 
-//javac -cp .:JDA-4.1.1_101-withDependencies.jar bottix/Bot.java
-//java -cp .:JDA-4.1.1_101-withDependencies.jar bottix/Bot
+//javac -cp .:JDA-4.1.1_101-withDependencies.jar:json-20190722.jar bottix/Bot.java
+//java -cp .:JDA-4.1.1_101-withDependencies.jar:json-20190722.jar  bottix/Bot
