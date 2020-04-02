@@ -80,7 +80,6 @@ public class MyListener extends ListenerAdapter {
             builder.setThumbnail("https://zupimages.net/up/20/14/tebn.png");
             builder.setFooter("Created with ❤ by Nooaah",
                     "https://avatars1.githubusercontent.com/u/47362864?s=460&u=04d5044f526000883d018d140a1b9850a17090fd&v=4");
-
             builder.setColor(new Color(69, 135, 244));
 
             MessageChannel channel = event.getChannel();
@@ -114,14 +113,6 @@ public class MyListener extends ListenerAdapter {
             Object wind = ((JSONObject) meteo.get("wind")).get("speed");
             Object sunrise = ((JSONObject) meteo.get("sys")).get("sunrise");
 
-            Date date = new Date();
-            long timeMilli = date.getTime();
-
-            System.out.println(timeMilli);
-
-            // MessageChannel channel = event.getChannel(); channel.sendMessage("Hey " +
-            // event.getMember().getAsMention() + " ! " + msg).queue();
-
             EmbedBuilder builder = new EmbedBuilder();
             builder.setAuthor("Catherine Laborde", null,
                     "https://static1.purepeople.com/articles/6/37/00/46/@/5335919-catherine-laborde-33eme-salon-du-livre-624x600-2.jpg");
@@ -132,7 +123,6 @@ public class MyListener extends ListenerAdapter {
             builder.addField("Ressentis", feel + "°C", true);
             builder.addField("Humidité", humidity + "%", true);
             builder.addField("Vent", wind + "km/h", true);
-            // builder.addField("Levé du soleil", sunrise.toString(), false);
             builder.setImage("http://openweathermap.org/img/wn/" + icon + "@2x.png");
             builder.setColor(new Color(69, 135, 244));
             builder.setFooter("Created with ❤ by Nooaah",
@@ -154,7 +144,6 @@ public class MyListener extends ListenerAdapter {
             } else {
                 number = (int) (Math.random() * (Integer.valueOf(tab[2])));
             }
-            // getAuthor().getName()
             channel.sendMessage("Hmm I'm thinking " + event.getMember().getAsMention() + ", " + number + " !").queue();
         }
 
@@ -162,7 +151,6 @@ public class MyListener extends ListenerAdapter {
             MessageChannel channel = event.getChannel();
             String[] tab = content.split(" ");
             if (content.contains("tag")) {
-
                 try {
                     URL url = new URL("https://cataas.com/cat/" + tab[2]);
                     BufferedImage img = ImageIO.read(url);
@@ -170,7 +158,7 @@ public class MyListener extends ListenerAdapter {
                     ImageIO.write(img, "jpg", file);
                     event.getChannel().sendFile(file).queue();
                 } catch (Exception e) {
-                    event.getChannel().sendMessage("Error fetching image 1.").queue();
+                    event.getChannel().sendMessage("Error fetching image.").queue();
                 }
             } else if (content.contains("text")) {
                 String text = "";
@@ -185,9 +173,8 @@ public class MyListener extends ListenerAdapter {
                     event.getChannel().sendFile(file).queue();
 
                 } catch (Exception e) {
-                    event.getChannel().sendMessage("Error fetching image 2.").queue();
+                    event.getChannel().sendMessage("Error fetching image.").queue();
                 }
-
             } else {
                 try {
                     URL url = new URL("https://cataas.com/cat");
@@ -199,10 +186,7 @@ public class MyListener extends ListenerAdapter {
                 } catch (Exception e) {
                     event.getChannel().sendMessage("Error fetching image.").queue();
                 }
-
             }
-
         }
-
     }
 }
