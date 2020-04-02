@@ -10,7 +10,7 @@ public class Bot {
     public static void main(String[] args) throws LoginException {
         System.out.println("Launching Bottix...");
         try {
-            JDA jda = new JDABuilder("XXXXX").build();
+            JDA jda = new JDABuilder("Njk0MTQ1NzU4NDYyNDc2MzM4.XoSw7w.L8iJwQ4LoQyDhT3xOsY0Fy5pD1E").build();
             jda.addEventListener(new MyListener());
             System.out.println("Bottix is online !");
         } catch (Exception e) {
