@@ -55,6 +55,80 @@ public class MyListener extends ListenerAdapter {
         return result;
     }
 
+    static String getImageNasa(String date) {
+        String result = "";
+        try {
+            String serv = "https://api.nasa.gov/planetary/apod?api_key=9OcsTiEIboZbpVhSwqBHjuFaEATzpC6knb4Auepj&date="
+                    + date;
+            URL url = new URL(serv);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code:" + conn.getResponseCode());
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+            result = br.lines().collect(Collectors.joining());
+            conn.disconnect();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    static String getImage(String search, int page) {
+        String result = "";
+        try {
+            String serv = "https://api.unsplash.com/search/photos?client_id=17dd4488ccc46e89e2aff30172d4d77295a5448dd70674140330b75057d61397&page="
+                    + page + "&query=" + search;
+            URL url = new URL(serv);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code:" + conn.getResponseCode());
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+            result = br.lines().collect(Collectors.joining());
+            conn.disconnect();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    static String getQuestion() {
+        String result = "";
+        try {
+            String serv = "http://jservice.io/api/random";
+            URL url = new URL(serv);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code:" + conn.getResponseCode());
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+            result = br.lines().collect(Collectors.joining());
+            conn.disconnect();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         System.out.println(event);
@@ -77,6 +151,7 @@ public class MyListener extends ListenerAdapter {
             builder.addField("Chat avec tag", BOT_PREFIX + " cat tag *cute*", true);
             builder.addField("Chat avec texte", BOT_PREFIX + " cat text *VotreTexte*", true);
             builder.addField("Météo", BOT_PREFIX + " meteo *VilleOuRienPourCalais*", true);
+            builder.addField("NASA", BOT_PREFIX + " nasa *JJ/MM/AAAAouRien*", true);
             builder.setThumbnail("https://zupimages.net/up/20/14/tebn.png");
             builder.setFooter("Created with ❤ by Nooaah",
                     "https://avatars1.githubusercontent.com/u/47362864?s=460&u=04d5044f526000883d018d140a1b9850a17090fd&v=4");
@@ -158,7 +233,9 @@ public class MyListener extends ListenerAdapter {
                     ImageIO.write(img, "jpg", file);
                     event.getChannel().sendFile(file).queue();
                 } catch (Exception e) {
-                    event.getChannel().sendMessage("Error fetching image.").queue();
+                    event.getChannel().sendMessage(
+                            "P'tit problème technique... Tu peux peut-être réessayer ?! 😎\nN'hésite pas à faire */15 help* pour voir toutes les commandes")
+                            .queue();
                 }
             } else if (content.contains("text")) {
                 String text = "";
@@ -173,7 +250,9 @@ public class MyListener extends ListenerAdapter {
                     event.getChannel().sendFile(file).queue();
 
                 } catch (Exception e) {
-                    event.getChannel().sendMessage("Error fetching image.").queue();
+                    event.getChannel().sendMessage(
+                            "P'tit problème technique... Tu peux peut-être réessayer ?! 😎\nN'hésite pas à faire */15 help* pour voir toutes les commandes")
+                            .queue();
                 }
             } else {
                 try {
@@ -184,9 +263,113 @@ public class MyListener extends ListenerAdapter {
                     event.getChannel().sendFile(file).queue();
 
                 } catch (Exception e) {
-                    event.getChannel().sendMessage("Error fetching image.").queue();
+                    event.getChannel().sendMessage(
+                            "P'tit problème technique... Tu peux peut-être réessayer ?! 😎\nN'hésite pas à faire */15 help* pour voir toutes les commandes")
+                            .queue();
                 }
             }
         }
+
+        if (content.contains(BOT_PREFIX + " nasa")) {
+            MessageChannel channel = event.getChannel();
+            String[] tab = content.split(" ");
+            String annee, mois, jour;
+            if (tab.length != 2) {
+                String[] date = tab[2].split("/");
+                jour = date[2];
+                mois = date[1];
+                annee = date[0];
+            } else {
+                jour = "2020";
+                mois = "03";
+                annee = "02";
+            }
+
+            System.out.println(jour + "-" + mois + "-" + annee);
+            try {
+                JSONObject result = new JSONObject(getImageNasa(jour + "-" + mois + "-" + annee));
+
+                Object imageUrl = ((JSONObject) result).get("url");
+                Object desc = ((JSONObject) result).get("explanation");
+
+                System.out.println(imageUrl);
+
+                channel.sendMessage("Here's a NASA image on this date " + event.getMember().getAsMention() + " !\n"
+                        + imageUrl.toString() + "\nDescription : \n" + desc.toString()).queue();
+
+            } catch (Exception e) {
+                channel.sendMessage(
+                        "Désolé j'ai eu un petit Bug... Il n'y a peut etre aucune image à cette date, réessaie encore et observe ! 😎\nN'hésite pas à faire */15 help* pour voir toutes les commandes")
+                        .queue();
+            }
+        }
+
+        if (content.contains(BOT_PREFIX + " question")) {
+            MessageChannel channel = event.getChannel();
+            try {
+
+                JSONArray callApi = new JSONArray(getQuestion());
+                String question = "";
+                String answer = "";
+                for (int i = 0; i < callApi.length(); i++) {
+                    JSONObject jObj = callApi.getJSONObject(i);
+                    question = jObj.getString("question");
+                    answer = jObj.getString("answer");
+                }
+
+                /*
+                 * JSONObject result = new JSONObject(getQuestion());
+                 * 
+                 * Object question = ((JSONObject) result).get("question"); Object answer =
+                 * ((JSONObject) result).get("answer");
+                 */
+                channel.sendMessage("Hey ! There is the question for" + event.getMember().getAsMention() + " !\n\n"
+                        + question.toString() + "\n\nAnswer :\n\n||" + answer.toString() + "||").queue();
+
+            } catch (Exception e) {
+                System.out.println(e);
+                channel.sendMessage(
+                        "Désolé j'ai eu un petit Bug... réessaie encore et observe ! 😎\nN'hésite pas à faire */15 help* pour voir toutes les commandes")
+                        .queue();
+            }
+        }
+
+        if (content.contains(BOT_PREFIX + " image")) {
+            String[] tab = content.split(" ");
+
+            MessageChannel channel = event.getChannel();
+            int number = (int) (Math.random() * 6);
+            try {
+
+                JSONObject callApi = new JSONObject(getImage(tab[2], number));
+                JSONArray arr = callApi.getJSONArray("results");
+                JSONObject raw = new JSONObject();
+                String image = "";
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONObject jObj = arr.getJSONObject(i);
+                    raw = jObj.getJSONObject("urls");
+                    image = raw.getString("full");
+                }
+
+                try {
+                    URL url = new URL(image);
+                    BufferedImage img = ImageIO.read(url);
+                    File file = new File("temp.jpg");
+                    ImageIO.write(img, "jpg", file);
+                    event.getChannel().sendFile(file).queue();
+                } catch (Exception e) {
+                    event.getChannel().sendMessage(
+                            "P'tit problème technique... Tu peux peut-être réessayer ?! 😎\nN'hésite pas à faire */15 help* pour voir toutes les commandes")
+                            .queue();
+                }
+
+            } catch (Exception e) {
+                System.out.println(e);
+                channel.sendMessage(
+                        "Désolé j'ai eu un petit Bug... réessaie encore et observe ! 😎\nN'hésite pas à faire */15 help* pour voir toutes les commandes")
+                        .queue();
+            }
+        }
+
     }
 }
