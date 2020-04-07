@@ -1,0 +1,3 @@
+-cp
+.:JDA-4.1.1_101-withDependencies.jar:json-20190722.jar
+bottix/Bot.java

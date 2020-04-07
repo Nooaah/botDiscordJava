@@ -152,7 +152,7 @@ public class MyListener extends ListenerAdapter {
             builder.addField("Chat avec texte", BOT_PREFIX + " cat text *VotreTexte*", true);
             builder.addField("Météo", BOT_PREFIX + " meteo *VilleOuRienPourCalais*", true);
             builder.addField("NASA", BOT_PREFIX + " nasa *JJ/MM/AAAAouRien*", true);
-            builder.addField("Recherche d'image", BOT_PREFIX + " image *Sujet*", true);
+            builder.addField("Recherche d'image", BOT_PREFIX + " search *Sujet*", true);
             builder.addField("Quizz", BOT_PREFIX + " question", true);
             builder.setThumbnail("https://zupimages.net/up/20/14/tebn.png");
             builder.setFooter("Created with ❤ by Nooaah",
@@ -296,23 +296,17 @@ public class MyListener extends ListenerAdapter {
 
                 System.out.println(imageUrl);
 
-
                 EmbedBuilder builder = new EmbedBuilder();
-                builder.setAuthor("NASA pour " + event.getAuthor().getName(), null, "https://www.stickpng.com/assets/images/58429400a6515b1e0ad75acc.png");
+                builder.setAuthor("NASA pour " + event.getAuthor().getName(), null,
+                        "https://www.stickpng.com/assets/images/58429400a6515b1e0ad75acc.png");
                 builder.setTitle("Image de la NASA datant du " + tab[2]);
-                builder.addField("Description" ,desc.toString(), true);
+                builder.addField("Description", desc.toString(), true);
                 builder.setImage(imageUrl.toString());
                 builder.setFooter("Created with ❤ by Nooaah",
                         "https://avatars1.githubusercontent.com/u/47362864?s=460&u=04d5044f526000883d018d140a1b9850a17090fd&v=4");
                 builder.setColor(new Color(255, 0, 0));
-    
-                channel.sendMessage("Voici les commandes pour t'aider " + event.getMember().getAsMention() + " ! ").queue();
-                channel.sendMessage(builder.build()).queue();
 
-                /*
-                channel.sendMessage("Here's a NASA image on this date " + event.getMember().getAsMention() + " !\n"
-                        + imageUrl.toString() + "\nDescription : \n" + desc.toString()).queue();
-                */
+                channel.sendMessage(builder.build()).queue();
 
             } catch (Exception e) {
                 channel.sendMessage(
@@ -334,12 +328,6 @@ public class MyListener extends ListenerAdapter {
                     answer = jObj.getString("answer");
                 }
 
-                /*
-                 * JSONObject result = new JSONObject(getQuestion());
-                 * 
-                 * Object question = ((JSONObject) result).get("question"); Object answer =
-                 * ((JSONObject) result).get("answer");
-                 */
                 channel.sendMessage("Hey ! There is the question for" + event.getMember().getAsMention() + " !\n\n"
                         + question.toString() + "\n\nAnswer :\n\n||" + answer.toString() + "||").queue();
 
@@ -351,7 +339,7 @@ public class MyListener extends ListenerAdapter {
             }
         }
 
-        if (content.contains(BOT_PREFIX + " image")) {
+        if (content.contains(BOT_PREFIX + " search")) {
             String[] tab = content.split(" ");
 
             MessageChannel channel = event.getChannel();
@@ -368,17 +356,17 @@ public class MyListener extends ListenerAdapter {
                     image = raw.getString("full");
                 }
 
-                try {
-                    URL url = new URL(image);
-                    BufferedImage img = ImageIO.read(url);
-                    File file = new File("temp.jpg");
-                    ImageIO.write(img, "jpg", file);
-                    event.getChannel().sendFile(file).queue();
-                } catch (Exception e) {
-                    event.getChannel().sendMessage(
-                            "P'tit problème technique... Tu peux peut-être réessayer ?! 😎\nN'hésite pas à faire */15 help* pour voir toutes les commandes")
-                            .queue();
-                }
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setAuthor("Pour " + event.getAuthor().getName(), null,
+                        "https://cdn0.iconfinder.com/data/icons/kameleon-free-pack-rounded/110/Camera-Front-512.png");
+                builder.setTitle("Image libre de droits *" + tab[2] + "*");
+                // builder.addField("Description" ,desc.toString(), true);
+                builder.setImage(image.toString());
+                builder.setFooter("Created with ❤ by Nooaah",
+                        "https://avatars1.githubusercontent.com/u/47362864?s=460&u=04d5044f526000883d018d140a1b9850a17090fd&v=4");
+                builder.setColor(new Color(0, 255, 0));
+
+                channel.sendMessage(builder.build()).queue();
 
             } catch (Exception e) {
                 System.out.println(e);
