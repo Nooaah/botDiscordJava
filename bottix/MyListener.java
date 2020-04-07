@@ -152,6 +152,8 @@ public class MyListener extends ListenerAdapter {
             builder.addField("Chat avec texte", BOT_PREFIX + " cat text *VotreTexte*", true);
             builder.addField("Météo", BOT_PREFIX + " meteo *VilleOuRienPourCalais*", true);
             builder.addField("NASA", BOT_PREFIX + " nasa *JJ/MM/AAAAouRien*", true);
+            builder.addField("Recherche d'image", BOT_PREFIX + " image *Sujet*", true);
+            builder.addField("Quizz", BOT_PREFIX + " question", true);
             builder.setThumbnail("https://zupimages.net/up/20/14/tebn.png");
             builder.setFooter("Created with ❤ by Nooaah",
                     "https://avatars1.githubusercontent.com/u/47362864?s=460&u=04d5044f526000883d018d140a1b9850a17090fd&v=4");
@@ -294,8 +296,23 @@ public class MyListener extends ListenerAdapter {
 
                 System.out.println(imageUrl);
 
+
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setAuthor("NASA pour " + event.getAuthor().getName(), null, "https://www.stickpng.com/assets/images/58429400a6515b1e0ad75acc.png");
+                builder.setTitle("Image de la NASA datant du " + tab[2]);
+                builder.addField("Description" ,desc.toString(), true);
+                builder.setImage(imageUrl.toString());
+                builder.setFooter("Created with ❤ by Nooaah",
+                        "https://avatars1.githubusercontent.com/u/47362864?s=460&u=04d5044f526000883d018d140a1b9850a17090fd&v=4");
+                builder.setColor(new Color(255, 0, 0));
+    
+                channel.sendMessage("Voici les commandes pour t'aider " + event.getMember().getAsMention() + " ! ").queue();
+                channel.sendMessage(builder.build()).queue();
+
+                /*
                 channel.sendMessage("Here's a NASA image on this date " + event.getMember().getAsMention() + " !\n"
                         + imageUrl.toString() + "\nDescription : \n" + desc.toString()).queue();
+                */
 
             } catch (Exception e) {
                 channel.sendMessage(
